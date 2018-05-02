@@ -43,15 +43,24 @@ class ContentList extends State<Content> {
       padding: const EdgeInsets.all(4.0),
       itemCount: _postList.length,
       itemBuilder: (
-          context,
-          i,
-          ) {
+        context,
+        i,
+      ) {
         return _buildPost(_postList[i]);
       },
     );
   }
 
   Widget _buildPost(Post postObj) {
+
+    var likeIcon;
+
+    if(postObj.hasLiked) {
+      likeIcon = new Icon(Icons.star, color: Colors.red[600],);
+    } else {
+      likeIcon = new Icon(Icons.star_border);
+    }
+
     return new Container(
         padding: const EdgeInsets.all(8.0),
         margin: const EdgeInsets.all(8.0),
@@ -61,7 +70,9 @@ class ContentList extends State<Content> {
         ),
         child: new Column(children: <Widget>[
           new Container(
-              decoration: new BoxDecoration(border: new BorderDirectional(bottom: new BorderSide(color: Colors.grey[350]))),
+              decoration: new BoxDecoration(
+                  border: new BorderDirectional(
+                      bottom: new BorderSide(color: Colors.grey[350]))),
               padding: const EdgeInsets.only(bottom: 8.0),
               child: new Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -69,30 +80,44 @@ class ContentList extends State<Content> {
                   new Container(
                       margin: const EdgeInsets.only(right: 8.0),
                       child: new CircleAvatar(
-                        backgroundImage: new NetworkImage(postObj.profilePicture),
+                        backgroundImage:
+                            new NetworkImage(postObj.profilePicture),
                         radius: 22.0,
                       )),
                   new Expanded(
                       child: new Text(
-                        "@" + postObj.username,
-                        style: new TextStyle(color: Colors.blue[700]),
-                      )),
-                  new Icon(
-                    Icons.more_vert,
+                    "@" + postObj.username,
+                    style: new TextStyle(color: Colors.blue[700]),
+                  )),
+                  new IconButton(
+                    icon: new Icon(Icons.more_vert),
                     color: Colors.grey[600],
+                    onPressed: () {
+                      print("more opts pressed");
+                    },
                   )
                 ],
               )),
           new Container(
-              margin: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+              margin: const EdgeInsets.only(top: 16.0),
               height: 350.0,
               width: 550.0,
               child: new Image.network(
                 postObj.contentImage,
                 fit: BoxFit.cover,
-              ))
+              )),
+          new Row(
+            children: <Widget>[
+              new IconButton(
+                  icon: likeIcon,
+                  iconSize: 30.0,
+                  onPressed: () {
+                    setState(() {
+                      postObj.hasLiked ? postObj.hasLiked = false : postObj.hasLiked = true;
+                    });
+                  })
+            ],
+          )
         ]));
   }
 }
-
-
